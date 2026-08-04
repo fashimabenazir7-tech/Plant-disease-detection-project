@@ -1,0 +1,77 @@
+## Folder Structure
+```
+leaf_disease_detector/
+├── app.py                # Main Flask app router and pixel analysis logic
+├── config.py             # Database and file configurations
+├── database.sql          # MySQL database schema setup script
+├── disease_info.py       # Disease dictionary with Tamil/English descriptions
+├── train_model.py        # CNN architecture definition and model creator
+├── requirements.txt      # Python dependencies list
+├── leaf_model.h5         # Saved CNN model (Auto-generated on first run)
+├── static/
+│   ├── css/
+│   │   └── style.css     # Premium dark glassmorphic styling
+│   ├── js/
+│   │   └── main.js       # Voice synthesis engine, drag-and-drop actions
+│   └── uploads/          # Directory where user uploaded images are saved
+└── templates/
+    ├── login.html        # Page 1: Secure Login / Signup
+    ├── upload.html       # Page 2: Drag & drop upload & dashboard history
+    ├── detect.html       # Page 3: Result dashboard with progress rings & voice
+    └── exit.html         # Page 4: Goodbye / session termination card
+```
+---
+## Local Setup Instructions
+### Prerequisites
+- Python 3.8 to 3.11 (TensorFlow is fully compatible)
+- MySQL Server (optional but recommended; falls back to SQLite if absent)
+### Step 1: Install Dependencies
+Open your command terminal inside the project directory and run:
+```bash
+pip install -r requirements.txt
+```
+### Step 2: Initialize Database (MySQL)
+1. Start your local MySQL server (e.g. XAMPP, WampServer, or direct installation).
+2. Log into your MySQL console and execute:
+   ```sql
+   SOURCE database.sql;
+   ```
+3. Update `config.py` with your MySQL user and password if different from default (`root` with no password).
+### Step 3: Run the Application
+Start the Flask server by running:
+```bash
+python app.py
+```
+On startup, `app.py` checks for `leaf_model.h5`. If missing, it invokes `train_model.py` to auto-compile a lightweight placeholder model so the application is immediately operational.
+Visit the app in your browser at: `http://127.0.0.1:5000`
+---
+## CNN Model Training on PlantVillage Dataset
+To train the CNN model on the actual PlantVillage dataset:
+1. Download the PlantVillage dataset (folders organized by class name).
+2. Ensure folder names match the list in `train_model.py` (or edit `disease_info.py` to add new custom labels).
+3. Import the trainer in python or run:
+   ```python
+   import train_model
+   train_model.train_on_dataset('/path/to/plantvillage/dataset', epochs=15)
+   ```
+4. This overwrites `leaf_model.h5` with your newly trained high-accuracy model.
+---
+## Deployment Guide: Host Online Permanently
+To make this web application available on the internet forever for anyone to use, follow this standard deployment roadmap:
+### 1. Host the Database (Free MySQL)
+Instead of running MySQL locally, use a free cloud database provider to host your MySQL instance online:
+- **Aiven.io** or **Clever Cloud** offer free tier MySQL hosting.
+- Set up a database, copy the connection URI, and replace the database host, user, password, and database name credentials in `config.py` (or set them as Environment Variables on your hosting provider).
+### 2. Deploy the Web App (Free Cloud Hosting)
+Use a platform like **Render.com** (recommended for Flask final year projects) to host the application:
+1. Push your project files to a **GitHub** repository.
+2. Sign up on [Render.com](https://render.com) and link your GitHub account.
+3. Click **New +** and select **Web Service**.
+4. Link your project repository.
+5. Configure the Web Service settings:
+   - **Runtime**: `Python`
+   - **Build Command**: `pip install -r requirements.txt && python train_model.py`
+   - **Start Command**: `gunicorn app:app` (Make sure to add `gunicorn` to your requirements.txt or let Render install it).
+6. Under **Environment Variables**, configure:
+   - `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DB` to point to your cloud MySQL instance.
+7. Click **Deploy**. Render will host your application online and provide a public URL (e.g. `https://your-project.onrender.com`) that anyone can access at any time!

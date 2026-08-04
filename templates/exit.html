@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Terminated - shafaGuard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <a href="#" class="brand"><i class="fa-solid fa-leaf"></i> <span>shafaGuard</span></a>
+        <div class="nav-links">
+            <span class="nav-user">Plant Disease AI Platform</span>
+        </div>
+    </header>
+    <main>
+        <div class="exit-wrapper glass-card">
+            <div class="exit-icon">
+                <i class="fa-regular fa-circle-check"></i>
+            </div>
+            <h2>Session Terminated</h2>
+            <p>
+                You have successfully logged out of the shafaGuard Plant Disease Detection System.
+                All cached session keys and credentials have been securely cleared.
+            </p>
+            
+            <div class="card-block" style="text-align: left; margin-bottom: 2rem;">
+                <h4 style="font-size: 1rem;"><i class="fa-solid fa-circle-info"></i> Project Information</h4>
+                <p style="font-size: 0.85rem; margin-top: 5px; line-height: 1.5; color: var(--text-muted);">
+                    This system uses a Deep Convolutional Neural Network (CNN) trained on the PlantVillage dataset to classify crop disease symptoms. An integrated image thresholding engine calculates leaf spot area ratio, and the HTML5 Web Speech API delivers real-time dual-language instructions.
+                </p>
+            </div>
+            <a href="{{ url_for('login_page') }}" class="btn-primary">
+                <i class="fa-solid fa-right-to-bracket"></i> Log In Again
+            </a>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 shafaGuard Leaf Disease Detection System. Powered by <span>CNN & Flask</span>.</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

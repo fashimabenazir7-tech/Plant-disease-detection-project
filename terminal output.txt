@@ -1,0 +1,44 @@
+Here is a simple, step-by-step guide to run this project in Visual Studio Code (VS Code) and your Windows Terminal to get the same output:
+
+Step 1: Open the Project in VS Code
+Open Visual Studio Code.
+Click File > Open Folder... in the top menu.
+Navigate to and select this directory: C:\Users\acer\.gemini\antigravity\scratch\leaf_disease_detector
+Click Select Folder. You will see all the project files (like app.py, templates, static) listed on the left panel.
+Step 2: Open the Terminal in VS Code
+Open the built-in terminal by pressing: Ctrl + ``` (Control + Backtick key) OR click Terminal > New Terminal in the top menu.
+Ensure the terminal path is pointing to your directory (it should show C:\Users\acer\.gemini\antigravity\scratch\leaf_disease_detector>).
+Step 3: Install the Required Packages
+In the VS Code terminal, run the following command to install all the Python libraries (Flask, NumPy, OpenCV, TensorFlow, Pillow, etc.):
+
+powershell
+
+
+pip install -r requirements.txt
+NOTE
+
+If some packages (like TensorFlow) fail to install due to Python version mismatches, don't worry! The application is designed to automatically fall back into a Simulated Mode so you can still open and test the full application immediately.
+
+Step 4: Run the Application
+In your terminal, execute the main script by typing:
+
+powershell
+
+
+python app.py
+You should see an output in the terminal like this:
+
+text
+
+
+[Model Alert] TensorFlow or NumPy not found. CNN will run in Simulated Mode.
+[Image Alert] OpenCV or NumPy not installed. Color analysis will fall back to simulation mode.
+[DB] MySQL connection failed. Falling back to local SQLite database.
+ * Serving Flask app 'app'
+ * Debug mode: on
+ * Running on http://127.0.0.1:5000
+Step 5: Open the Web Application
+Hold Ctrl and click the link http://127.0.0.1:5000 directly inside the VS Code terminal, or open your web browser (Chrome, Edge, etc.) and type http://127.0.0.1:5000.
+The shafaGuard login page will open.
+Click "Register here" to create a dummy account, then log in.
+Try using the drag-and-drop file uploader or click the "Use Live Camera" button to capture a leaf photo and view the circular progress diagnostics and Tamil/English voice outputs!

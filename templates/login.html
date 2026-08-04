@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaf Disease Detector - Secure Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <a href="#" class="brand"><i class="fa-solid fa-leaf"></i> <span>shafaGuard</span></a>
+        <div class="nav-links">
+            <span class="nav-user">Plant Disease AI Platform</span>
+        </div>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fa-solid {% if category == 'danger' %}fa-circle-xmark{% else %}fa-circle-check{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <main>
+        <div class="auth-wrapper glass-card">
+            <!-- Login Form -->
+            <div id="login-form-box">
+                <div class="auth-header">
+                    <h2>Welcome Back</h2>
+                    <p>Access your leaf diagnosis dashboard</p>
+                </div>
+                <form action="{{ url_for('login_page') }}" method="POST">
+                    <input type="hidden" name="action" value="login">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" name="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        Login <i class="fa-solid fa-right-to-bracket"></i>
+                    </button>
+                </form>
+                <div class="auth-toggle">
+                    Don't have an account? <a onclick="toggleAuth(true)">Register here</a>
+                </div>
+            </div>
+            <!-- Registration Form -->
+            <div id="register-form-box" style="display: none;">
+                <div class="auth-header">
+                    <h2>Create Account</h2>
+                    <p>Register to start analyzing crops</p>
+                </div>
+                <form action="{{ url_for('login_page') }}" method="POST">
+                    <input type="hidden" name="action" value="register">
+                    <div class="form-group">
+                        <label for="reg-username">Username</label>
+                        <input type="text" id="reg-username" name="username" class="form-control" placeholder="Choose a username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email Address</label>
+                        <input type="email" id="reg-email" name="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" name="password" class="form-control" placeholder="Choose a strong password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        Register <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </form>
+                <div class="auth-toggle">
+                    Already registered? <a onclick="toggleAuth(false)">Login here</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 shafaGuard Leaf Disease Detection System. Powered by <span>CNN & Flask</span>.</p>
+    </footer>
+    <script>
+        function toggleAuth(showRegister) {
+            const loginBox = document.getElementById('login-form-box');
+            const registerBox = document.getElementById('register-form-box');
+            
+            if (showRegister) {
+                loginBox.style.display = 'none';
+                registerBox.style.display = 'block';
+            } else {
+                loginBox.style.display = 'block';
+                registerBox.style.display = 'none';
+            }
+        }
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
