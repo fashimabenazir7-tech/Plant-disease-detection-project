@@ -102,6 +102,12 @@ class DatabaseHelper:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
+                        # Add phone_number column if it does not already exist
+            cursor.execute("PRAGMA table_info(users)")
+            columns = [row["name"] for row in cursor.fetchall()]
+
+            if "phone_number" not in columns:
+                cursor.execute("ALTER TABLE users ADD COLUMN phone_number TEXT")
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS detections (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
