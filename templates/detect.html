@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnostic Analysis - shafaGuard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -78,6 +79,14 @@
                             <span class="metric-label">Diseased Spots Area</span>
                         </div>
                     </div>
+                    <!-- Visual Leaf Health Chart -->
+<div class="card-block" style="text-align: center;">
+    <h4>Leaf Health Analysis</h4>
+
+    <div style="max-width: 320px; margin: 0 auto;">
+        <canvas id="healthChart"></canvas>
+    </div>
+</div>
                     <!-- Details Card -->
                     <div class="card-block">
                         <h4>CNN Model Confidence</h4>
@@ -113,5 +122,32 @@
         <p>&copy; 2026 shafaGuard Leaf Disease Detection System. Powered by <span>CNN & Flask</span>.</p>
     </footer>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+    const healthPct = Number("{{ healthy_pct }}");
+    const diseasedPct = Number("{{ diseased_pct }}");
+
+    const chartCanvas = document.getElementById("healthChart");
+
+    new Chart(chartCanvas, {
+        type: "doughnut",
+        data: {
+            labels: ["Healthy", "Diseased"],
+            datasets: [{
+                data: [healthPct, diseasedPct],
+                backgroundColor: ["#2e7d32", "#e53935"],
+                borderWidth: 2,
+                borderColor: "#ffffff"
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

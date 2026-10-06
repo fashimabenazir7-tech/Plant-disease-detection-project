@@ -121,54 +121,86 @@ class DatabaseHelper:
         if not self.use_mysql:
             conn.close()
     # User registration
-    def create_user(self, username, email, password):
+    def create_user(self, username, email, phone_number, password):
         conn = self.get_connection()
         cursor = conn.cursor()
         password_hash = generate_password_hash(password)
         success = False
+
         try:
             if self.use_mysql:
                 cursor.execute(
-                    "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s)",
-                    (username, email, password_hash)
+                    "INSERT INTO users (username, email, phone_number, password_hash) VALUES (%s, %s, %s, %s)",
+                    (username, email, phone_number, password_hash)
                 )
             else:
                 cursor.execute(
-                    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-                    (username, email, password_hash)
+                    "INSERT INTO users (username, email, phone_number, password_hash) VALUES (?, ?, ?, ?)",
+                    (username, email, phone_number, password_hash)
                 )
+
             conn.commit()
             success = True
+
         except Exception as e:
             print(f"[DB] Error registering user: {e}")
             conn.rollback()
+
         finally:
             cursor.close()
             if not self.use_mysql:
                 conn.close()
-        return success
+
+            return success
+
+        
     # Fetch user details
     def get_user_by_username(self, username):
         conn = self.get_connection()
         cursor = conn.cursor()
         user = None
+
         try:
             if self.use_mysql:
-                cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+                cursor.execute(
+                    "SELECT id, username, email, phone_number, password_hash FROM users WHERE username = %s",
+                    (username,)
+                )
                 row = cursor.fetchone()
+
                 if row:
-                    user = {'id': row[0], 'username': row[1], 'email': row[2], 'password_hash': row[3]}
+                    user = {
+                        'id': row[0],
+                        'username': row[1],
+                        'email': row[2],
+                        'phone_number': row[3],
+                        'password_hash': row[4]
+                    }
+
             else:
-                cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+                cursor.execute(
+                    "SELECT id, username, email, phone_number, password_hash FROM users WHERE username = ?",
+                    (username,)
+                )
                 row = cursor.fetchone()
+
                 if row:
-                    user = {'id': row['id'], 'username': row['username'], 'email': row['email'], 'password_hash': row['password_hash']}
+                    user = {
+                        'id': row['id'],
+                        'username': row['username'],
+                        'email': row['email'],
+                        'phone_number': row['phone_number'],
+                        'password_hash': row['password_hash']
+                    }
+
         except Exception as e:
             print(f"[DB] User lookup error: {e}")
+
         finally:
             cursor.close()
             if not self.use_mysql:
                 conn.close()
+
         return user
     # Save detection logs
     def log_detection(self, user_id, filename, disease_name, confidence, healthy_pct, diseased_pct):
@@ -196,6 +228,7 @@ class DatabaseHelper:
             if not self.use_mysql:
                 conn.close()
         return success
+    
     # Fetch user history
     def get_user_history(self, user_id):
         conn = self.get_connection()
@@ -299,25 +332,27 @@ def home():
 def login_page():
     if 'user_id' in session:
         return redirect(url_for('upload_page'))
-        
+
     if request.method == 'POST':
         action = request.form.get('action')
         username = request.form.get('username').strip()
         password = request.form.get('password').strip()
-        
+
         if action == 'register':
             email = request.form.get('email').strip()
-            if not username or not email or not password:
+            phone_number = request.form.get('phone_number').strip()
+
+            if not username or not email or not phone_number or not password:
                 flash('Please fill in all fields.', 'danger')
             else:
                 existing = db_helper.get_user_by_username(username)
                 if existing:
                     flash('Username already exists. Please pick another.', 'danger')
-                elif db_helper.create_user(username, email, password):
+                elif db_helper.create_user(username, email, phone_number, password):
                     flash('Registration successful! Please login.', 'success')
                 else:
                     flash('Registration failed. Try again.', 'danger')
-        
+
         elif action == 'login':
             user = db_helper.get_user_by_username(username)
             if user and check_password_hash(user['password_hash'], password):
@@ -326,7 +361,7 @@ def login_page():
                 return redirect(url_for('upload_page'))
             else:
                 flash('Invalid username or password.', 'danger')
-                
+
     return render_template('login.html')
 # Page 2: Upload Images
 @app.route('/upload', methods=['GET', 'POST'])
